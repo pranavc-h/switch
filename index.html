@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMTC AL Switch EV11 BS-VI Bus Mod</title>
+
+    <!-- Custom Font -->
+    <style>
+        @font-face {
+            font-family: 'EurostileUnicase';
+            src: url('futuraptdemi.otf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'EurostileUnicase', Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 1.5s ease forwards;
+        }
+
+        .slide-up {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideUp 1.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Popup Password */
+        #passwordPopup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.7);
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            opacity: 0;
+            animation: popup 0.6s ease forwards;
+        }
+
+        @keyframes popup {
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        #passwordPopup input {
+            padding: 10px;
+            width: 80%;
+            margin: 10px 0;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #passwordPopup button {
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        #passwordPopup button:hover {
+            transform: scale(1.05);
+        }
+
+        #blur-background {
+            filter: blur(8px);
+            pointer-events: none;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .thumbnail {
+            width: 100%;
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+
+        .thumbnail:hover {
+            transform: scale(1.02);
+        }
+
+        .mod-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            margin: 10px 0;
+        }
+
+        .credits a {
+            color: #ff6600;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .history {
+            background: #f9f9f9;
+            padding: 15px;
+            border-left: 4px solid #ff6600;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+
+        .features h3 {
+            color: #ff6600;
+            margin: 10px 0;
+        }
+
+        .features ul {
+            padding-left: 20px;
+            line-height: 1.6;
+        }
+
+        .download-btn {
+            display: block;
+            background: #ff6600;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+
+        .download-btn:hover {
+            background: #e65c00;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .mod-title {
+                font-size: 24px;
+            }
+
+            #passwordPopup input {
+                width: 100%;
+            }
+        }
+
+        .history, .features {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.history.slide-up, .features.slide-up {
+    opacity: 1;
+    transform: translateY(0);
+}
+.comments-section {
+            margin-top: 30px;
+        }
+
+        .comment {
+            background: #f1f1f1;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .comment-author {
+            font-weight: bold;
+            color: #ff6600;
+        }
+
+        .comment-text {
+            margin: 5px 0;
+        }
+
+        .comment-form input, .comment-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .comment-form button {
+            background: #ff6600;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Password Popup -->
+    <div id="passwordPopup">
+        <h2>Enter Password</h2>
+        <input type="password" id="passwordInput" placeholder="Enter Password">
+        <br>
+        <button onclick="checkPassword()">Submit</button>
+    </div>
+
+    <!-- Main Content -->
+    <div id="blur-background">
+        <div class="container fade-in">
+            <img src="thumbnail.jpg" alt="BMTC AL Switch EV11" class="thumbnail">
+            <h1 class="mod-title">BMTC AL Switch EV11 BS-VI Bus Mod</h1>
+            <p class="credits">
+                Mod Owner: <a href="https://www.youtube.com/@RoadHost" target="_blank">RoadHost</a> |
+                Conversion by: <a href="https://www.youtube.com/@SAM" target="_blank">SAM</a>
+            </p>
+            <div class="history slide-up">
+                <h3>History of BMTC AL Switch EV11:</h3>
+                <p>The BMTC AL Switch EV11 is a revolutionary electric bus designed for urban transportation. 
+                Its BS-VI compliant engine ensures reduced emissions and enhanced efficiency. The sleek design and advanced 
+                features make it a popular choice among public transport options. With its spacious interiors and modern 
+                aesthetics, the EV11 represents the next generation of eco-friendly commuting in metropolitan cities.</p>
+            </div>
+            <div class="features slide-up">
+                <h3>Features of the BMTC AL Switch EV11:</h3>
+                <ul>
+                    <li>Realistic exterior and interior design.</li>
+                    <li>Accurate driving physics and animations.</li>
+                    <li>Custom paint jobs and liveries.</li>
+                </ul>
+            </div>
+            <a href="https://sharemods.com/sjzv1m5zf7yx/bmtcswitchev.bussidmod.html" class="download-btn">Mod</a>
+            <a href="https://sharemods.com/11t1nfzss6oo/template.png.html" class="download-btn">Template</a>
+            <a href="https://sharemods.com/h331phyqref4/base.png.html" class="download-btn">Livery</a>
+
+            <div class="comments-section">
+                <h2>Comments</h2>
+                <div class="comment">
+                    <p class="comment-author">Rajesh:</p>
+                    <p class="comment-text">Mod chennagide!</p>
+                </div>
+                <div class="comment">
+                    <p class="comment-author">Manju:</p>
+                    <p class="comment-text">Super modu, graphics tumba realistic ide!</p>
+                </div>
+                <div class="comment">
+                    <p class="comment-author">Ashwin:</p>
+                    <p class="comment-text">Ivattu download madidini, nodana hegirutte antha!</p>
+                </div>
+    
+                <!-- Comment Form -->
+                <form class="comment-form" id="commentForm">
+                    <input type="text" id="commentAuthor" placeholder="Your Name" required>
+                    <textarea id="commentText" placeholder="Your Comment" required></textarea>
+                    <button type="button" onclick="addComment()">Submit Comment</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Password Popup Logic
+        function checkPassword() {
+            var password = document.getElementById('passwordInput').value;
+            if (password === 'BMTCEV11' || password === 'bmtcev11') {
+                document.getElementById('passwordPopup').style.display = 'none';
+                document.getElementById('blur-background').style.filter = 'none';
+                document.getElementById('blur-background').style.pointerEvents = 'auto';
+                
+                // Trigger animations for History and Features after password is correct
+                setTimeout(() => {
+                    document.querySelector('.history').classList.add('slide-up');
+                    document.querySelector('.features').classList.add('slide-up');
+                }, 500); // Slight delay for smoother transition
+            } else {
+                alert('Incorrect Password. Try Again!');
+            }
+        }
+    
+        // Enter Key to Submit Password
+        document.getElementById('passwordInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+
+        function addComment() {
+            var author = document.getElementById('commentAuthor').value;
+            var text = document.getElementById('commentText').value;
+
+            if(author && text) {
+                var newComment = document.createElement('div');
+                newComment.classList.add('comment');
+                newComment.innerHTML = '<p class="comment-author">' + author + ':</p><p class="comment-text">' + text + '</p>';
+                document.querySelector('.comments-section').appendChild(newComment);
+                document.getElementById('commentForm').reset();
+            }
+        }
+    </script>
+    
+    
+</body>
+</html>
